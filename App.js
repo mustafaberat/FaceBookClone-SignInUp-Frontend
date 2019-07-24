@@ -1,10 +1,10 @@
 import React from 'react';
-import SignInPage from './components/signIn'
+import SignUp from './components/signUp';
 
 class App extends React.Component {
   render() {
     return (
-      <SignInPage/>      
+      <SignUp/>      
     );
   }
 }

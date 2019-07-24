@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
-export default class signIn extends React.Component {
+export default class signUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = { 
@@ -29,12 +29,21 @@ export default class signIn extends React.Component {
 
   handleSubmit=(event)=>{
     if(this.state.singInEmail.includes('@' && '.')){ //CORRECT EMAIL
-      if(this.state.singInPassword.checkMyPassword()){ //CORRECT PASSWORD
+        document.getElementById('textInputEmail').style.border= '1px solid #ddd';
+
+      if(this.checkMyPassword()){ //CORRECT PASSWORD
         console.log("Everything is fine!");
       }
-      else{console.warn("Incorect password. Make BORDER!")} //INCORRECT PASSWORD
+      else{ //INCORRECT PASSWORD
+          document.getElementById('textInputPassword').style.border= 'red';
+          console.warn("Incorect password. Make BORDER!")
+        } 
     }
-    else{ console.warn("Incorect email. Make BORDER!")} //INCORRECT EMAIL
+    else{ //INCORRECT EMAIL
+        document.getElementById('textInputEmail').style.border= '1px solid red';
+        document.getElementById('textInputEmail').focus();
+        console.warn("Incorect email. Make BORDER!")
+    } 
      console.log(this.state);
   }
 
@@ -42,6 +51,7 @@ export default class signIn extends React.Component {
     var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
     if(strongRegex.test(this.state.singInPassword)){
       //True password type
+      console.log("True password");
       return true;
     }else{
       //False password type
@@ -67,27 +77,23 @@ export default class signIn extends React.Component {
         <Text style={styles.facebookTitle}>facebook</Text>
       </View>
       
-        <View style={styles.inputsArea}>
-          <TextInput className={'singInEmail'} placeholder={"Email or phone number"} style={styles.inputEmailorPhone} onChange={this.handleChangeEmail}></TextInput>          
+        <View style={styles.inputArea}>
+            <View style={styles.nameAndSurname}>
+                <TextInput id={'textInputName'} className={'signUpName'} placeholder={"Name"} style={styles.inputNameSurname} onChange={this.handleChangeEmail}></TextInput>          
+                <TextInput id={'textInputSurname'} className={'signUpSurname'} placeholder={"Surname"} style={styles.inputNameSurname} onChange={this.handleChangeEmail}></TextInput>          
+            </View>
 
-          <TextInput className={'singInPassword'} placeholder={"Password"} secureTextEntry={true} style={styles.inputPassword} onChange={this.handleChangePassword}></TextInput>
+          <TextInput id={'textInputEmail'} className={'singInEmail'} placeholder={"Email or phone number"} style={styles.inputEmailorPhone} onChange={this.handleChangeEmail}></TextInput>          
+          <TextInput id={'textInputEmail'} className={'singInEmail'} placeholder={"Email or phone number"} style={styles.inputEmailorPhone} onChange={this.handleChangeEmail}></TextInput>          
+
+          <TextInput id={'textInputPassword'} className={'singInPassword'} placeholder={"Password"} secureTextEntry={true} style={styles.inputPassword} onChange={this.handleChangePassword}></TextInput>
+
         </View>
-
-      <View style={styles.logInButtonArea}>
             <TouchableOpacity style={styles.buttonTouchableOpacity}>
                 <Text style={styles.buttonText} onPress={this.handleSubmit}>
                     Log In
                 </Text>
             </TouchableOpacity>
-      </View>
-
-    <View style={styles.signUpArea}>
-      <TouchableOpacity style={styles.signUpArea}>
-              <Text style={styles.signUpText}>
-                Sign Up for Facebook
-              </Text>
-      </TouchableOpacity>
-    </View>
 
     </View>
     );
@@ -104,7 +110,7 @@ export default class signIn extends React.Component {
 //CSS
 const styles = StyleSheet.create({
   titleArea: {
-    height: 220,
+    height: 120,
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
@@ -119,14 +125,38 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
 
-  inputsArea: {
-    height: 120,
-    alignItems: 'center',    
+  nameAndSurname: {
+    display: 'flex',
+    flexDirection: 'row',
+    textAlign: 'center',
+    justifyContent: 'space-around',
+  },
+
+  inputArea : {
+    backgroundColor: 'red',
+    alignItems: 'center',
+  },    
+
+  inputNameSurname: {
+    width: '40%',
+    height: 50,
+    fontSize: 18,
+    backgroundColor: '#fefffb',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: '#333',
+    padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: .9,
+    borderBottomColor: '#ddd',
+    borderTopRightRadius: 4,
+    borderTopLeftRadius: 4,
   },
 
   inputEmailorPhone: {
     width: '90%',    
-    height: 60,
+    height: 50,
     fontSize: 18,
     backgroundColor: '#fefffb',
     alignItems: 'center',
@@ -179,20 +209,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#5E78B6',
     borderRadius: 4,
-  },
-
-  signUpArea : {
-    height: '45%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  signUpText : {
-    color: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    fontSize: 18,
   },
 
 });
