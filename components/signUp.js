@@ -57,30 +57,24 @@ export default class signUp extends React.Component {
     if(this.checkMyNameAndSurname()){ //True name and surname
       if(this.state.signUpEmail.includes('@' && '.')){ //CORRECT EMAIL
         this.fixBorder('signUpEmail');
-        console.log('Correct Email');
         if(this.checkMyPassword()){ //CORRECT PASSWORD
           if(this.state.signUpPassword === this.state.signUpPasswordConfirm){
             this.fixBorder('signUpPasswordConfirm');
-            console.log('Correct Password Confirm');
-            console.log("Everything is fine! ADD DATA BASE ANYMORE");
-            //ADD DATA BASE !!!!!!
+            console.log(this.state);
+            //ADD DATA BASE !!!!!!!!!!!!!!!!!!!!!!!!
           }
           else{ //INCORRECT PASSWORD CONFIRM
             this.borderAndFocus('signUpPasswordConfirm');
-            console.log("Not correct confirm password");
           }
         }
         else{ //INCORRECT PASSWORD
-          // i dont need because in checkPassword i controll it
-          // this.borderAndFocus('textInputPassword');
+          // I don't need it because I already checked in checkPassword
         }
       }
       else{ //INCORRECT EMAIL
         this.borderAndFocus('signUpEmail');
       }
-      console.log(this.state);
     }
-
   }
 
   exactMatch = (reg, str) =>{
@@ -95,11 +89,9 @@ export default class signUp extends React.Component {
       if(this.exactMatch(nameRegex,this.state.signUpName)){
         Boolname = true;
         this.fixBorder('textInputName');
-        console.log("Correct name")
       }
       else{ //Wrong name
         this.borderAndFocus('textInputName');
-        console.log("Wrong Name");
         return ;
       }
 
@@ -108,11 +100,9 @@ export default class signUp extends React.Component {
         if(this.exactMatch(nameRegex,this.state.signUpSurname)){
           Boolsurname = true;
           this.fixBorder('textInputSurname');
-          console.log("Correct Surname");
         }
         else { //Wrong surname
           this.borderAndFocus('textInputSurname');
-          console.log("Wrong surname");
           return ;
         }
 
@@ -120,20 +110,16 @@ export default class signUp extends React.Component {
         // ? document.getElementById('signUpName').style.border = '4px solid red'
         // : document.getElementById('signUpName').style.border = '4px solid blue';
         if(Boolname == false && Boolsurname==false){
-          console.log("Name or surname are broken");
           return false;
         }
         else{ //Name and surname are fine
-          console.log("Name and surname are greate!");
           return true;
         }
       } else { //Surname includes space or null
         this.borderAndFocus('textInputSurname');
-        console.log("Border And Focus Surname");
       }
     } else{ //Name includes space or null
       this.borderAndFocus('textInputName');
-      console.log("Border And Focus Name");
     }
   }
 
@@ -153,40 +139,35 @@ export default class signUp extends React.Component {
     var lowerLetterRegex = new RegExp("[a-z]");
     var numberRegex = new RegExp("[0-9]");
     if(this.state.signUpPassword.match(upperLetterRegex)){ //UpperLetter in
-      console.log("Upper case in");
       this.fixBorder('signUpPassword');
       if(this.state.signUpPassword.match(lowerLetterRegex)){ //LowerLetter in
-        console.log("Lower case in");
         this.fixBorder('signUpPassword');
         if(this.state.signUpPassword.match(numberRegex)){ //Number in
-          console.log("Digit in");
           this.fixBorder('signUpPassword');
           if(this.state.signUpPassword.length >= 6){ //Password bigger 6
             this.fixBorder('signUpPassword');
-            console.log("Password is greate");
             return true;
           }
           else{ //Password lower 6
             this.borderAndFocus('signUpPassword');
-            console.log("Password must be at least 6 character");
+            alert("Password should be 6 characters at least");
             return false;
           }
         }
         else{ //Number NOT
           this.borderAndFocus('signUpPassword');
-          console.log("You need to add at least 1 Digit");
+          alert("Password must contain at least one digit");
           return false;
         }
       }
       else{ //Lowerletter NOT
         this.borderAndFocus('signUpPassword');
-        console.log("You need to add at least 1 Lower case");
+        alert("Password must contain at least one lower case letter");
         return false;
       }
     } else{ //UpperLetter NOT
-      // alert("Password need to at least 1 lowercase, 1 uppercase and 1 numeric");
       this.borderAndFocus('signUpPassword');
-      console.log("You need to add at least 1 Upper case");
+      alert("Password must contain at least one upper case letter");
       return false;
     }
   }
