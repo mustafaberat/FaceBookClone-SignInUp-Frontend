@@ -5,69 +5,174 @@ import { TextInput } from 'react-native-gesture-handler';
 export default class signUp extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-        singInEmail : '',
-        singInPassword : '',
+    this.state = {
+      signUpName: '',
+      signUpSurname: '',
+      signUpEmail : '',
+      signUpPassword : '',
+      signUpPasswordConfirm : '',
      };
-      
+
+     this.handleChangeName = this.handleChangeName.bind(this);
+     this.handleChangeSurname = this.handleChangeSurname.bind(this);
      this.handleChangeEmail = this.handleChangeEmail.bind(this);
      this.handleChangePassword = this.handleChangePassword.bind(this);
+     this.handleChangePasswordConfirm = this.handleChangePasswordConfirm.bind(this);
      this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChangeName=(event)=>{
+    this.setState({
+      signUpName: event.target.value,
+    });
+  }
+
+  handleChangeSurname=(event)=>{
+    this.setState({
+      signUpSurname: event.target.value,
+    });
   }
 
   handleChangeEmail=(event)=>{
     this.setState({
-      singInEmail: event.target.value,
+      signUpEmail: event.target.value,
     });
   }
 
   handleChangePassword=(event)=>{
     this.setState({
-      singInPassword: event.target.value,
+      signUpPassword: event.target.value,
     });
   }
 
-  handleSubmit=(event)=>{
-    if(this.state.singInEmail.includes('@' && '.')){ //CORRECT EMAIL
-        document.getElementById('textInputEmail').style.border= '1px solid #ddd';
+  handleChangePasswordConfirm=(event)=>{
+    this.setState({
+      signUpPasswordConfirm: event.target.value,
+    });
 
-      if(this.checkMyPassword()){ //CORRECT PASSWORD
-        console.log("Everything is fine!");
-      }
-      else{ //INCORRECT PASSWORD
+  }
+
+  handleSubmit=(event)=>{
+
+    if(this.checkMyNameAndSurname()){ //True name and surname
+      if(this.state.signUpEmail.includes('@' && '.')){ //CORRECT EMAIL
+        this.fixBorder('signUpEmail');
+        console.log('Correct Email');
+        if(this.checkMyPassword()){ //CORRECT PASSWORD
+        this.fixBorder('signUpPassword');
+        console.log('Correct Password');
+          if(this.state.signUpPassword === this.state.signUpPasswordConfirm){
+            this.fixBorder('signUpPasswordConfirm');
+            console.log('Correct Password Confirm');
+            console.log("Everything is fine!");
+          }
+          else{ //INCORRECT PASSWORD CONFIRM
+            this.borderAndFocus('signUpPasswordConfirm');
+            console.log("Not correct confirm password");
+          }
+        }
+        else{ //INCORRECT PASSWORD
           document.getElementById('textInputPassword').style.border= 'red';
           console.warn("Incorect password. Make BORDER!")
-        } 
+        }
+      }
+      else{ //INCORRECT EMAIL
+        console.warn("Incorect email.");
+        this.borderAndFocus('signUpEmail');
+      }
+      console.log(this.state);
     }
-    else{ //INCORRECT EMAIL
-        document.getElementById('textInputEmail').style.border= '1px solid red';
-        document.getElementById('textInputEmail').focus();
-        console.warn("Incorect email. Make BORDER!")
-    } 
-     console.log(this.state);
+
+  }
+
+  exactMatch = (reg, str) =>{
+    var match = str.match(reg);
+    return match[0] === str;
+  }
+
+  checkMyNameAndSurname = () => {
+    if(this.checkNullOrSpace(this.state.signUpName)){ //Name not includes space or null
+      var nameRegex = new RegExp("[A-Za-z]+");
+      var Boolname = false;
+      if(this.exactMatch(nameRegex,this.state.signUpName)){
+        Boolname = true;
+        this.fixBorder('textInputName');
+        console.log("Correct name")
+      }
+      else{ //Wrong name
+        this.borderAndFocus('textInputName');
+        console.log("Wrong Name");
+        return ;
+      }
+
+      if(this.checkNullOrSpace(this.state.signUpSurname)){ //Surname not includes space or null
+        var Boolsurname = false;
+        if(this.exactMatch(nameRegex,this.state.signUpSurname)){
+          Boolsurname = true;
+          this.fixBorder('textInputSurname');
+          console.log("Correct Surname");
+        }
+        else { //Wrong surname
+          this.borderAndFocus('textInputSurname');
+          console.log("Wrong surname");
+          return ;
+        }
+
+        // Boolname == false
+        // ? document.getElementById('signUpName').style.border = '4px solid red'
+        // : document.getElementById('signUpName').style.border = '4px solid blue';
+        if(Boolname == false && Boolsurname==false){
+          console.log("Name or surname are broken");
+          return false;
+        }
+        else{ //Name and surname are fine
+          console.log("Name and surname are greate!");
+          return true;
+        }
+      } else { //Surname includes space or null
+        this.borderAndFocus('textInputSurname');
+        console.log("Border And Focus Surname");
+      }
+    } else{ //Name includes space or null
+      this.borderAndFocus('textInputName');
+      console.log("Border And Focus Name");
+    }
+  }
+
+  checkNullOrSpace=(checkThat)=>{
+    if(checkThat === "" || checkThat.includes(' ')
+    || checkThat.includes(
+      0 || 1 || 2 ||
+      3 || 4 || 5 ||
+      6 || 7 || 8 ||
+      9 ))
+    return false
+    else return true;
   }
 
   checkMyPassword = () => {
-    var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-    if(strongRegex.test(this.state.singInPassword)){
+    var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+    if(this.exactMatch(mediumRegex, this.state.signUpPassword)){
       //True password type
-      console.log("True password");
+      console.log("True type password");
       return true;
-    }else{
+    } else{
       //False password type
-      console.log("Wrong password");
+      // alert("Password need to at least 1 lowercase, 1 uppercase and 1 numeric");
+      this.borderAndFocus('signUpPassword');
+      console.log("Password need to at least 1 lowercase, 1 uppercase and 1 numeric");
       return false;
     }
-    
-    // let totalScore = 0; 
-    // let myPassword = this.state.singInPassword;
-    // let lowerCaseLetters = /[a-z]/g;
-    // let upperCaseLetters = /[A-Z]/g;
-    // let numbers = /[0-9]/g;
-    // console.log("My password size: " + myPassword.size + '\n' +
-    // "My password length: " + myPassword.length)
-    // return true;
   }
+
+  borderAndFocus = (idName) => {
+      document.getElementById(idName).style.border= '1px solid red';
+      document.getElementById(idName).focus();
+  }
+
+  fixBorder = (idName) => {
+    document.getElementById(idName).style.border= '1px solid #ddd';
+}
 
 
   render() {
@@ -76,25 +181,33 @@ export default class signUp extends React.Component {
       <View style={styles.titleArea}>
         <Text style={styles.facebookTitle}>facebook</Text>
       </View>
-      
+
         <View style={styles.inputArea}>
             <View style={styles.nameAndSurname}>
-                <TextInput id={'textInputName'} className={'signUpName'} placeholder={"Name"} style={styles.inputNameSurname} onChange={this.handleChangeEmail}></TextInput>          
-                <TextInput id={'textInputSurname'} className={'signUpSurname'} placeholder={"Surname"} style={styles.inputNameSurname} onChange={this.handleChangeEmail}></TextInput>          
+                <TextInput id={'textInputName'} className={'signUpName'} placeholder={"Name"}
+                          style={styles.inputNameSurname} onChange={this.handleChangeName}></TextInput>
+                <TextInput id={'textInputSurname'} className={'signUpSurname'} placeholder={"Surname"}
+                          style={styles.inputNameSurname} onChange={this.handleChangeSurname}></TextInput>
             </View>
 
-          <TextInput id={'textInputEmail'} className={'singInEmail'} placeholder={"Email or phone number"} style={styles.inputEmailorPhone} onChange={this.handleChangeEmail}></TextInput>          
-          <TextInput id={'textInputEmail'} className={'singInEmail'} placeholder={"Email or phone number"} style={styles.inputEmailorPhone} onChange={this.handleChangeEmail}></TextInput>          
+          <TextInput id={'signUpEmail'} className={'signUpnEmail'} placeholder={"Email"}
+                      style={styles.inputEmailorPhone} onChange={this.handleChangeEmail}></TextInput>
+          <TextInput id={'signUpPassword'} className={'signUpEmail'} placeholder={"Password"}
+                      secureTextEntry={true} style={styles.inputPassword}
+                      onChange={this.handleChangePassword}></TextInput>
 
-          <TextInput id={'textInputPassword'} className={'singInPassword'} placeholder={"Password"} secureTextEntry={true} style={styles.inputPassword} onChange={this.handleChangePassword}></TextInput>
+          <TextInput id={'signUpPasswordConfirm'} className={'signUpPassword'} placeholder={"Confirm Password"}
+                      secureTextEntry={true} style={styles.inputPassword}
+                      onChange={this.handleChangePasswordConfirm}></TextInput>
 
         </View>
+        <View style={{alignItems: 'center'}}>
             <TouchableOpacity style={styles.buttonTouchableOpacity}>
                 <Text style={styles.buttonText} onPress={this.handleSubmit}>
-                    Log In
+                    Sign Up
                 </Text>
             </TouchableOpacity>
-
+        </View>
     </View>
     );
   }
@@ -128,14 +241,15 @@ const styles = StyleSheet.create({
   nameAndSurname: {
     display: 'flex',
     flexDirection: 'row',
-    textAlign: 'center',
     justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 10,
   },
 
   inputArea : {
-    backgroundColor: 'red',
     alignItems: 'center',
-  },    
+    marginTop: 20,
+  },
 
   inputNameSurname: {
     width: '40%',
@@ -150,12 +264,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: .9,
     borderBottomColor: '#ddd',
-    borderTopRightRadius: 4,
-    borderTopLeftRadius: 4,
+    borderRadius: 4,
   },
 
   inputEmailorPhone: {
-    width: '90%',    
+    width: '90%',
     height: 50,
     fontSize: 18,
     backgroundColor: '#fefffb',
@@ -167,21 +280,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: .9,
     borderBottomColor: '#ddd',
-    borderTopRightRadius: 4,
-    borderTopLeftRadius: 4,
+    borderRadius: 4,
+    marginBottom: 10,
   },
 
   inputPassword: {
     width: '90%',
-    height: 60,
+    height: 50,
     fontSize: 18,
     backgroundColor: '#fefffb',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 15,
     color: '#333',
-    borderBottomRightRadius: 4,
-    borderBottomLeftRadius: 4,
+    borderRadius: 4,
+    marginBottom: 10,
   },
 
   logInButtonArea:{
@@ -189,8 +302,8 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-  },  
-  
+  },
+
   buttonText : {
     display: 'flex',
     justifyContent: 'center',
@@ -203,7 +316,8 @@ const styles = StyleSheet.create({
   },
 
   buttonTouchableOpacity : {
-    flex: 1,   
+    marginTop: 30,
+    height: 50,
     width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
