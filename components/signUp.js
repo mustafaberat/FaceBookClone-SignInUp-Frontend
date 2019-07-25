@@ -59,12 +59,11 @@ export default class signUp extends React.Component {
         this.fixBorder('signUpEmail');
         console.log('Correct Email');
         if(this.checkMyPassword()){ //CORRECT PASSWORD
-        this.fixBorder('signUpPassword');
-        console.log('Correct Password');
           if(this.state.signUpPassword === this.state.signUpPasswordConfirm){
             this.fixBorder('signUpPasswordConfirm');
             console.log('Correct Password Confirm');
-            console.log("Everything is fine!");
+            console.log("Everything is fine! ADD DATA BASE ANYMORE");
+            //ADD DATA BASE !!!!!!
           }
           else{ //INCORRECT PASSWORD CONFIRM
             this.borderAndFocus('signUpPasswordConfirm');
@@ -72,12 +71,11 @@ export default class signUp extends React.Component {
           }
         }
         else{ //INCORRECT PASSWORD
-          document.getElementById('textInputPassword').style.border= 'red';
-          console.warn("Incorect password. Make BORDER!")
+          // i dont need because in checkPassword i controll it
+          // this.borderAndFocus('textInputPassword');
         }
       }
       else{ //INCORRECT EMAIL
-        console.warn("Incorect email.");
         this.borderAndFocus('signUpEmail');
       }
       console.log(this.state);
@@ -151,16 +149,44 @@ export default class signUp extends React.Component {
   }
 
   checkMyPassword = () => {
-    var mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
-    if(this.exactMatch(mediumRegex, this.state.signUpPassword)){
-      //True password type
-      console.log("True type password");
-      return true;
-    } else{
-      //False password type
+    var upperLetterRegex = new RegExp("[A-Z]");
+    var lowerLetterRegex = new RegExp("[a-z]");
+    var numberRegex = new RegExp("[0-9]");
+    if(this.state.signUpPassword.match(upperLetterRegex)){ //UpperLetter in
+      console.log("Upper case in");
+      this.fixBorder('signUpPassword');
+      if(this.state.signUpPassword.match(lowerLetterRegex)){ //LowerLetter in
+        console.log("Lower case in");
+        this.fixBorder('signUpPassword');
+        if(this.state.signUpPassword.match(numberRegex)){ //Number in
+          console.log("Digit in");
+          this.fixBorder('signUpPassword');
+          if(this.state.signUpPassword.length >= 6){ //Password bigger 6
+            this.fixBorder('signUpPassword');
+            console.log("Password is greate");
+            return true;
+          }
+          else{ //Password lower 6
+            this.borderAndFocus('signUpPassword');
+            console.log("Password must be at least 6 character");
+            return false;
+          }
+        }
+        else{ //Number NOT
+          this.borderAndFocus('signUpPassword');
+          console.log("You need to add at least 1 Digit");
+          return false;
+        }
+      }
+      else{ //Lowerletter NOT
+        this.borderAndFocus('signUpPassword');
+        console.log("You need to add at least 1 Lower case");
+        return false;
+      }
+    } else{ //UpperLetter NOT
       // alert("Password need to at least 1 lowercase, 1 uppercase and 1 numeric");
       this.borderAndFocus('signUpPassword');
-      console.log("Password need to at least 1 lowercase, 1 uppercase and 1 numeric");
+      console.log("You need to add at least 1 Upper case");
       return false;
     }
   }
