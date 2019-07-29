@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import axios from 'axios';
 
 export default class signUp extends React.Component {
   constructor(props) {
@@ -61,7 +62,7 @@ export default class signUp extends React.Component {
           if(this.state.signUpPassword === this.state.signUpPasswordConfirm){
             this.fixBorder('signUpPasswordConfirm');
             console.log(this.state);
-            //ADD DATA BASE !!!!!!!!!!!!!!!!!!!!!!!!
+            this.addDataBaseByAxiosPost();
           }
           else{ //INCORRECT PASSWORD CONFIRM
             this.borderAndFocus('signUpPasswordConfirm');
@@ -75,6 +76,22 @@ export default class signUp extends React.Component {
         this.borderAndFocus('signUpEmail');
       }
     }
+  }
+
+  addDataBaseByAxiosPost = () => {
+    axios.post('http://10.222.110.26:8080/signUp', {
+      name: this.state.signUpName,
+      surname: this.state.signUpSurname,
+      email: this.state.signUpEmail,
+      password: this.state.signUpPassword,
+      passwordConfirm: this.state.signUpPasswordConfirm,
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
 
   exactMatch = (reg, str) =>{
