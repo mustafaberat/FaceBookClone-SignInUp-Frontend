@@ -23,7 +23,7 @@ export default class signUp extends React.Component {
 
   handleChangeName=(event)=>{
     this.setState({
-      signUpName: event.target.value,
+      signUpName: event.target.value
     });
   }
 
@@ -83,7 +83,7 @@ export default class signUp extends React.Component {
   }
 
   checkMyNameAndSurname = () => {
-    if(this.checkNullOrSpace(this.state.signUpName)){ //Name not includes space or null
+    if(this.checkNullSpaceOrDigit(this.state.signUpName)){ //Name not includes space or null
       var nameRegex = new RegExp("[A-Za-z]+");
       var Boolname = false;
       if(this.exactMatch(nameRegex,this.state.signUpName)){
@@ -95,7 +95,7 @@ export default class signUp extends React.Component {
         return ;
       }
 
-      if(this.checkNullOrSpace(this.state.signUpSurname)){ //Surname not includes space or null
+      if(this.checkNullSpaceOrDigit(this.state.signUpSurname)){ //Surname not includes space or null
         var Boolsurname = false;
         if(this.exactMatch(nameRegex,this.state.signUpSurname)){
           Boolsurname = true;
@@ -123,7 +123,7 @@ export default class signUp extends React.Component {
     }
   }
 
-  checkNullOrSpace=(checkThat)=>{
+  checkNullSpaceOrDigit=(checkThat)=>{
     if(checkThat === "" || checkThat.includes(' ')
     || checkThat.includes(
       0 || 1 || 2 ||
@@ -215,6 +215,14 @@ export default class signUp extends React.Component {
                 </Text>
             </TouchableOpacity>
         </View>
+
+        <View style={styles.goToSignView}>
+          <TouchableOpacity style={styles.goToSignInTouchableOpacity}>
+              <Text style={styles.goToSignInText}>
+                Already have an account?
+              </Text>
+          </TouchableOpacity>
+      </View>
     </View>
     );
   }
@@ -332,4 +340,22 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 
+  goToSignView : {
+    marginTop: 30,
+    height: 'auto',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  goToSignInTouchableOpacity : {
+    display: 'flex',
+    width: '80%',
+  },
+
+  goToSignInText : {
+    fontSize: 16,
+    justifyContent: 'center',
+    textAlign: 'center',
+    color: 'white',
+  },
 });
