@@ -61,7 +61,6 @@ export default class signUp extends React.Component {
         if(this.checkMyPassword()){ //CORRECT PASSWORD
           if(this.state.signUpPassword === this.state.signUpPasswordConfirm){
             this.fixBorder('signUpPasswordConfirm');
-            console.log(this.state);
             this.addDataBaseByAxiosPost();
           }
           else{ //INCORRECT PASSWORD CONFIRM
@@ -87,7 +86,7 @@ export default class signUp extends React.Component {
       passwordConfirm: this.state.signUpPasswordConfirm,
     })
     .then(function (response) {
-      console.log(response);
+      alert("Welcome to facebook");
     })
     .catch(function (error) {
       console.log(error);
