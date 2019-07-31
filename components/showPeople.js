@@ -1,22 +1,25 @@
 import React from 'react';
 import { StyleSheet, ScrollView, Text, View} from 'react-native';
 import axios from 'axios';
+import { Table, Row, Rows} from 'react-native-table-component';
+
 
 export default class showPeople extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            people:[]
+            people:[],
+            pageTitle: 'Facebook Users',
+            tableTitles : ['Name','Email','Details','Delete'],
          };
+         this.getPeople();
     }
 
     getPeople = () => {
      axios.get('http://10.222.110.26:8080/people')
-    .then(function (response) {
-      console.log(response)
-      this.setState(
-          {people: [...Object.data]}
-      )
+    .then(obj => {
+      this.setState (
+          {people: [...obj.data]});
     })
     .catch(function (error) {
       console.log(error);
@@ -24,36 +27,30 @@ export default class showPeople extends React.Component {
   }
 
     render() {
+
         let peopleComponentMap = this.state.people.map((personInformation, personIndex) => {
             return (
-                <tr key={personIndex}>
-                    <td>{personInformation.email}</td>
-                    <td>{personInformation.password}</td>
-                </tr>
+                <Rows key={personIndex}
+                      data={[[personInformation.name,personInformation.email,"BUTTON","BUTTON"]]}
+                      style={styles.otherRows}>
+                </Rows>
             );
-        })
+        });
 
         let title = (
             <View style={styles.titleArea}>
-                    <Text style={styles.titleText}>
-                        Facebook Users
-                    </Text>
-                </View>
+                <Text style={styles.titleText}>
+                    {this.state.pageTitle}
+                </Text>
+            </View>
         );
 
         let content = (
             <View style={styles.generalTableView}>
-                <table style={styles.generalTableTable}>
-                    <tr style={styles.generalTableTitle}>
-                        <thead style={{display: 'flex',justifyContent: 'space-around'}}>
-                            <th>Email</th>
-                            <th>Password</th>
-                        </thead>
-                    </tr>
-                    <tbody>
-                        {/* {peopleComponentMap} */}
-                    </tbody>
-                </table>
+                <Table style={styles.generalTableTable}>
+                    <Row data={this.state.tableTitles} style={styles.firstRow}></Row>
+                    {peopleComponentMap}
+                </Table>
             </View>
         );
 
@@ -88,8 +85,25 @@ const styles = StyleSheet.create({
 
     generalTableView : {
         flex: 1,
-        backgroundColor: 'tomato',
+        backgroundColor: '#ddd',
+        // textAlign: 'center'
     },
+
+    generalTableTable : {
+        flex: 1,
+        borderWidth: 4,
+        borderColor: 'yellow',
+    },
+
+    firstRow : {
+        height: 50,
+        backgroundColor: '#eee',
+
+    },
+
+    otherRows : {
+        height: 30
+    }
 
 
   });
