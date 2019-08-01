@@ -3,13 +3,12 @@ import { StyleSheet, ScrollView, Text, View} from 'react-native';
 import axios from 'axios';
 import { Table, Row, Rows} from 'react-native-table-component';
 
-
 export default class showPeople extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            people:[],
-            pageTitle: 'Facebook Users',
+            people :[],
+            pageTitle : 'Facebook Users',
             tableTitles : ['Name','Email','Details','Delete'],
          };
          this.getPeople();
@@ -26,12 +25,52 @@ export default class showPeople extends React.Component {
     });
   }
 
+  detailsButton=(personInformation)=>{
+    return (
+        <Text style={[styles.detailsButtonText, styles.detailsAndDeleteButton]}
+        onPress={()=>{
+            console.log("Person ID: " + personInformation.id + '\n' +
+            "Name: " + personInformation.name + '\n' +
+            "Surname: "+ personInformation.surname + '\n'+
+            "Email: " + personInformation.email + '\n' +
+            "Password: " + personInformation.password)
+
+            alert("Person ID: " + personInformation.id + '\n' +
+            "Name: " + personInformation.name + '\n' +
+            "Surname: "+ personInformation.surname + '\n'+
+            "Email: " + personInformation.email + '\n' +
+            "Password: " + personInformation.password)}
+        }>
+          X
+        </Text>
+    )
+  }
+
+
+  deleteButton=(personInformation)=>{
+    return (
+        <Text style={[styles.deleteButtonText, styles.detailsAndDeleteButton]}
+        onPress={()=>this.deletePersonById(personInformation.id)}>
+          X
+        </Text>
+    )
+  }
+
+  deletePersonById = (id) => {
+        axios.delete('http://10.222.110.26:8080/people/' + id)
+  }
+
     render() {
 
         let peopleComponentMap = this.state.people.map((personInformation, personIndex) => {
             return (
                 <Rows key={personIndex}
-                      data={[[personInformation.name,personInformation.email,"BUTTON","BUTTON"]]}
+                      data={[
+                          [personInformation.name,
+                            personInformation.email,
+                            this.detailsButton(personInformation),
+                            this.deleteButton(personInformation),]
+                        ]}
                       style={styles.otherRows}>
                 </Rows>
             );
@@ -91,8 +130,7 @@ const styles = StyleSheet.create({
 
     generalTableTable : {
         flex: 1,
-        borderWidth: 4,
-        borderColor: 'yellow',
+        width : '100%',
     },
 
     firstRow : {
@@ -102,8 +140,27 @@ const styles = StyleSheet.create({
     },
 
     otherRows : {
-        height: 30
-    }
+        height: 50,
+        // cursor: 'pointer',
+    },
+
+    detailsAndDeleteButton : {
+        display: 'flex',
+        textAlign: 'center',
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+        fontWeight: 'bold',
+    },
+
+    detailsButtonText : {
+        backgroundColor: 'yellow',
+    },
+
+    deleteButtonText : {
+        backgroundColor: 'red',
+    },
 
 
   });

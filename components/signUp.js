@@ -122,9 +122,6 @@ export default class signUp extends React.Component {
           return ;
         }
 
-        // Boolname == false
-        // ? document.getElementById('signUpName').style.border = '4px solid red'
-        // : document.getElementById('signUpName').style.border = '4px solid blue';
         if(Boolname == false && Boolsurname==false){
           return false;
         }

@@ -1,76 +1,106 @@
 import React from 'react';
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
+import axios from 'axios';
 
 export default class signIn extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { 
-        singInEmail : '',
-        singInPassword : '',
+    this.state = {
+        signInEmail : '',
+        signInPassword : '',
      };
-      
+
      this.handleChangeEmail = this.handleChangeEmail.bind(this);
      this.handleChangePassword = this.handleChangePassword.bind(this);
      this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  checkInformations = () => {
+    axios.post('http://10.222.110.26:8080/signIn', {
+      email: this.state.signInEmail,
+      password: this.state.signInPassword,
+    })
+    .then(function (response) {
+        console.log("Response data is: " + response.data)
+        if (response.data == 'Correct'){ //Correct informations
+            document.getElementById('signInPassword').style.border= '1px solid #ddd';
+            document.getElementById('signInEmail').style.border= '1px solid #ddd';
+            console.log("Welcome to facebook");
+            //GO TO ANOTHER PAGE
+        } else if(response.data == 'FailEmail') { //Not correct email
+            document.getElementById('signInEmail').style.border= '1px solid red';
+            document.getElementById('signInEmail').focus();
+        } else if(response.data == 'FailPassword') { //Not correct password
+            document.getElementById('signInPassword').style.border= '1px solid red';
+            document.getElementById('signInPassword').focus();
+        }
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+}
+
   handleChangeEmail=(event)=>{
     this.setState({
-      singInEmail: event.target.value,
+      signInEmail: event.target.value,
     });
   }
 
   handleChangePassword=(event)=>{
     this.setState({
-      singInPassword: event.target.value,
+      signInPassword: event.target.value,
     });
   }
 
   handleSubmit=(event)=>{
-    if(this.state.singInEmail.includes('@' && '.')){ //CORRECT EMAIL
-      if(this.state.singInPassword.checkMyPassword()){ //CORRECT PASSWORD
-        console.log("Everything is fine!");
+    if(this.state.signInEmail.includes('@') && this.state.signInEmail.includes('.')){ //CORRECT EMAIL
+      this.fixBorder('signInEmail');
+      if(this.checkMyPassword()){ //CORRECT PASSWORD
+        this.fixBorder('signInPassword');
+        this.checkInformations();
       }
-      else{console.warn("Incorect password. Make BORDER!")} //INCORRECT PASSWORD
+      else{this.borderAndFocus('signInPassword');} //INCORRECT PASSWORD
     }
-    else{ console.warn("Incorect email. Make BORDER!")} //INCORRECT EMAIL
-     console.log(this.state);
+    else{ this.borderAndFocus('signInEmail');} //INCORRECT EMAIL
   }
 
   checkMyPassword = () => {
-    var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
-    if(strongRegex.test(this.state.singInPassword)){
-      //True password type
+    var upperLetterRegex = new RegExp("[A-Z]");
+    var lowerLetterRegex = new RegExp("[a-z]");
+    var numberRegex = new RegExp("[0-9]");
+    if(this.state.signInPassword.match(upperLetterRegex) &&
+    this.state.signInPassword.match(lowerLetterRegex) &&
+    this.state.signInPassword.match(numberRegex) &&
+    this.state.signInPassword.length >= 6){ //True password type
+      this.fixBorder('signInPassword');
       return true;
-    }else{
-      //False password type
-      console.log("Wrong password");
+    }else{ //False password type
+      this.borderAndFocus('signInPassword');
       return false;
     }
-    
-    // let totalScore = 0; 
-    // let myPassword = this.state.singInPassword;
-    // let lowerCaseLetters = /[a-z]/g;
-    // let upperCaseLetters = /[A-Z]/g;
-    // let numbers = /[0-9]/g;
-    // console.log("My password size: " + myPassword.size + '\n' +
-    // "My password length: " + myPassword.length)
-    // return true;
   }
 
+  borderAndFocus = (idName) => {
+    document.getElementById(idName).style.border= '1px solid red';
+    document.getElementById(idName).focus();
+}
+
+  fixBorder = (idName) => {
+    document.getElementById(idName).style.border= '1px solid #ddd';
+}
 
   render() {
     return (
-      <View style={{flex: 1,backgroundColor:'#3b5999'} }>
+      <View style={{flex: 1,backgroundColor:'#3b5999'}}>
       <View style={styles.titleArea}>
         <Text style={styles.facebookTitle}>facebook</Text>
       </View>
-      
-        <View style={styles.inputsArea}>
-          <TextInput className={'singInEmail'} placeholder={"Email or phone number"} style={styles.inputEmailorPhone} onChange={this.handleChangeEmail}></TextInput>          
 
-          <TextInput className={'singInPassword'} placeholder={"Password"} secureTextEntry={true} style={styles.inputPassword} onChange={this.handleChangePassword}></TextInput>
+        <View style={styles.inputsArea}>
+          <TextInput id={'signInEmail'} className={'signInEmail'} placeholder={"Email or phone number"} style={styles.inputEmailorPhone} onChange={this.handleChangeEmail}></TextInput>
+
+         <TextInput id={'signInPassword'} className={'signInPassword'} placeholder={"Password"} secureTextEntry={true} style={styles.inputPassword} onChange={this.handleChangePassword}></TextInput>
         </View>
 
       <View style={styles.logInButtonArea}>
@@ -121,11 +151,11 @@ const styles = StyleSheet.create({
 
   inputsArea: {
     height: 120,
-    alignItems: 'center',    
+    alignItems: 'center',
   },
 
   inputEmailorPhone: {
-    width: '90%',    
+    width: '90%',
     height: 60,
     fontSize: 18,
     backgroundColor: '#fefffb',
@@ -159,8 +189,8 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-  },  
-  
+  },
+
   buttonText : {
     display: 'flex',
     justifyContent: 'center',
@@ -173,7 +203,7 @@ const styles = StyleSheet.create({
   },
 
   buttonTouchableOpacity : {
-    flex: 1,   
+    flex: 1,
     width: '90%',
     justifyContent: 'center',
     alignItems: 'center',
