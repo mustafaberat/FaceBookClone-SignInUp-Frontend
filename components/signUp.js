@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import axios from 'axios';
+import portfinder from './portFinder';
 
 export default class signUp extends React.Component {
   constructor(props) {
@@ -78,7 +79,7 @@ export default class signUp extends React.Component {
   }
 
   addDataBaseByAxiosPost = () => {
-    axios.post('http://10.222.110.26:8080/signUp', {
+    axios.post( portfinder.getBackEndUrl() + '/signUp', {
       name: this.state.signUpName,
       surname: this.state.signUpSurname,
       email: this.state.signUpEmail,

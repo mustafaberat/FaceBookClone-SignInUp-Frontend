@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View , TouchableOpacity} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import axios from 'axios';
+import portFinder from './portFinder';
 
 export default class signIn extends React.Component {
   constructor(props) {
@@ -17,16 +18,15 @@ export default class signIn extends React.Component {
   }
 
   checkInformations = () => {
-    axios.post('http://10.222.110.26:8080/signIn', {
+    axios.post( portFinder.getBackEndUrl() + '/signIn', {
       email: this.state.signInEmail,
       password: this.state.signInPassword,
     })
     .then(function (response) {
-        console.log("Response data is: " + response.data)
         if (response.data == 'Correct'){ //Correct informations
             document.getElementById('signInPassword').style.border= '1px solid #ddd';
             document.getElementById('signInEmail').style.border= '1px solid #ddd';
-            console.log("Welcome to facebook");
+            console.log("Welcome to facebook"); //For looking is that correct
             //GO TO ANOTHER PAGE
         } else if(response.data == 'FailEmail') { //Not correct email
             document.getElementById('signInEmail').style.border= '1px solid red';

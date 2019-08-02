@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, ScrollView, Text, View} from 'react-native';
 import axios from 'axios';
 import { Table, Row, Rows} from 'react-native-table-component';
+import portfinder from './portFinder';
 
 export default class showPeople extends React.Component {
     constructor(props) {
@@ -15,7 +16,7 @@ export default class showPeople extends React.Component {
     }
 
     getPeople = () => {
-     axios.get('http://10.222.110.26:8080/people')
+     axios.get(portfinder.getBackEndUrl() +'/people')
     .then(obj => {
       this.setState (
           {people: [...obj.data]});
@@ -32,14 +33,12 @@ export default class showPeople extends React.Component {
             console.log("Person ID: " + personInformation.id + '\n' +
             "Name: " + personInformation.name + '\n' +
             "Surname: "+ personInformation.surname + '\n'+
-            "Email: " + personInformation.email + '\n' +
-            "Password: " + personInformation.password)
+            "Email: " + personInformation.email)
 
             alert("Person ID: " + personInformation.id + '\n' +
             "Name: " + personInformation.name + '\n' +
             "Surname: "+ personInformation.surname + '\n'+
-            "Email: " + personInformation.email + '\n' +
-            "Password: " + personInformation.password)}
+            "Email: " + personInformation.email)}
         }>
           X
         </Text>
@@ -57,7 +56,8 @@ export default class showPeople extends React.Component {
   }
 
   deletePersonById = (id) => {
-        axios.delete('http://10.222.110.26:8080/people/' + id)
+      axios.delete(portfinder.getBackEndUrl() +'/people/' + id)
+      .then( window.location.reload()) //Reload page
   }
 
     render() {
@@ -94,7 +94,7 @@ export default class showPeople extends React.Component {
         );
 
         return ( //Return Of Render
-            <ScrollView>
+            <ScrollView style={styles.allPage}>
                 {title}
                 {content}
             </ScrollView>
@@ -110,12 +110,10 @@ const styles = StyleSheet.create({
       height: 60,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor: 'red',
     },
 
     titleText : {
-        color: 'aqua',
-        backgroundColor: '#333',
+        color: 'white',
         width: '50%',
         whiteSpace: 'normal',
         textAlign: 'center',
@@ -124,24 +122,24 @@ const styles = StyleSheet.create({
 
     generalTableView : {
         flex: 1,
-        backgroundColor: '#ddd',
-        // textAlign: 'center'
+        margin: 20,
+        backgroundColor: 'white',
     },
 
     generalTableTable : {
         flex: 1,
         width : '100%',
+        textAlign: 'center',
     },
 
     firstRow : {
         height: 50,
-        backgroundColor: '#eee',
-
+        backgroundColor: 'white',
     },
 
     otherRows : {
         height: 50,
-        // cursor: 'pointer',
+        textAlign: 'center',
     },
 
     detailsAndDeleteButton : {
@@ -151,16 +149,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         cursor: 'pointer',
-        fontWeight: 'bold',
+        fontWeight: 600,
     },
 
     detailsButtonText : {
-        backgroundColor: 'yellow',
+
     },
 
     deleteButtonText : {
-        backgroundColor: 'red',
+
     },
 
+    allPage : {
+        flex: 1,
+        backgroundColor:'#3b5999',
+    },
 
   });
